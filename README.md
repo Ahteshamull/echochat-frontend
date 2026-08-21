@@ -131,14 +131,33 @@ The complete API schema, endpoints, authorization headers, request payloads, and
 
 ## Live Demo
 
-- **Part 1 Chat Application**: [https://echochat-app.vercel.app/chat](https://echochat-app.vercel.app/chat) *(Replace with actual deployed URL)*
-- **Part 2 Landing Page**: [https://echochat-app.vercel.app/](https://echochat-app.vercel.app/) *(Replace with actual deployed URL)*
+- **Part 1 Chat Application**: [https://echochat-frontend-kappa.vercel.app/chat](https://echochat-frontend-kappa.vercel.app/chat)
+- **Part 2 Landing Page**: [https://echochat-frontend-kappa.vercel.app/](https://echochat-frontend-kappa.vercel.app/)
+
+---
+
+## Demo Accounts & Testing Guide
+
+For evaluation purposes, the following pre-created test accounts are available to verify multi-user real-time chats, socket connections, and group room creation.
+
+> [!TIP]
+> To test real-time chat sync, open the application in **two different browser sessions** (e.g., standard browser window and an Incognito window) and login to each account respectively.
+
+### Account 1
+- **Phone**: `+15550002221`
+- **Name**: `Test User 1`
+
+### Account 2
+- **Phone**: `+19991234567`
+- **Name**: `Test User`
+
+*Note: No separate registration flow is required. If you enter a new name and a unique phone number during login, the backend API automatically registers and creates the account.*
 
 ---
 
 ## GitHub Repository
 
-GitHub Repository Link: [https://github.com/hasan/echochat-frontend](https://github.com/hasan/echochat-frontend) *(Replace with actual repository URL)*
+GitHub Repository Link: [https://github.com/Ahteshamull/echochat-frontend](https://github.com/Ahteshamull/echochat-frontend)
 
 ---
 
