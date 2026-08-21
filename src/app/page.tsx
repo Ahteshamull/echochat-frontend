@@ -25,11 +25,14 @@ export default function Home() {
   ]);
   const [simInput, setSimInput] = useState('');
   const [isSimTyping, setIsSimTyping] = useState(false);
-  const simMessagesEndRef = useRef<HTMLDivElement | null>(null);
+  const simMessagesContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto-scroll simulator messages
+  // Auto-scroll simulator messages container (scrolls only the inner div, not the browser page)
   useEffect(() => {
-    simMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = simMessagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [simMessages, isSimTyping]);
 
   const handleSimSubmit = (e: React.FormEvent) => {
@@ -113,7 +116,7 @@ export default function Home() {
 
           <div className="flex items-center space-x-4">
             <a 
-              href="https://github.com" 
+              href="https://github.com/Ahteshamull/echochat-frontend" 
               target="_blank" 
               rel="noreferrer"
               className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all flex items-center justify-center"
@@ -248,7 +251,10 @@ export default function Home() {
               </div>
 
               {/* Chat bubbles container */}
-              <div className="flex-1 py-2 overflow-y-auto max-h-[170px] custom-scrollbar flex flex-col space-y-3 p-1 text-xs text-left">
+              <div 
+                ref={simMessagesContainerRef}
+                className="flex-1 py-2 overflow-y-auto max-h-[170px] custom-scrollbar flex flex-col space-y-3 p-1 text-xs text-left"
+              >
                 {simMessages.map((msg, idx) => {
                   const isMe = msg.sender === 'me';
                   return (
@@ -293,7 +299,6 @@ export default function Home() {
                     </div>
                   </div>
                 )}
-                <div ref={simMessagesEndRef} />
               </div>
 
               {/* Input Mockup Form */}

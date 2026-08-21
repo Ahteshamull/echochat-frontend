@@ -134,7 +134,7 @@ export default function GroupSettingsModal({ isOpen, onClose, conversation }: Gr
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="glass-effect w-full max-w-md rounded-3xl border border-white/10 overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+      <div className="glass-effect w-full max-w-md rounded-3xl border border-white/10 overflow-hidden shadow-2xl flex flex-col max-h-[85vh] animate-slide-up">
         
         {/* Header */}
         <div className="p-5 border-b border-white/10 flex items-center justify-between">
