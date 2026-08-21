@@ -7,6 +7,7 @@ import { api } from '@/services/api';
 import { User, GroupConversation } from '@/types/chat';
 import { X, UserMinus, ShieldAlert, Edit, UserPlus, Loader2, LogOut, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ConfirmModal from './ConfirmModal';
 
 interface GroupSettingsModalProps {
   isOpen: boolean;
@@ -30,6 +31,35 @@ export default function GroupSettingsModal({ isOpen, onClose, conversation }: Gr
   const [isSearching, setIsSearching] = useState(false);
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'danger' | 'info';
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: () => {},
+  });
+
+  const triggerConfirm = (
+    title: string,
+    message: string,
+    type: 'danger' | 'info',
+    onConfirm: () => void
+  ) => {
+    setConfirmState({
+      isOpen: true,
+      title,
+      message,
+      type,
+      onConfirm,
+    });
+  };
 
   // Sync rename input when conversation changes
   useEffect(() => {
@@ -99,41 +129,60 @@ export default function GroupSettingsModal({ isOpen, onClose, conversation }: Gr
   };
 
   const handleRemoveUser = async (userId: string, userName: string) => {
-    if (!confirm(`Are you sure you want to remove ${userName} from the group?`)) return;
-    try {
-      await removeParticipant(conversation._id, userId);
-      toast.success(`${userName} removed from group successfully.`);
-    } catch (err) {
-      toast.error('Failed to remove member.');
-    }
+    triggerConfirm(
+      'Remove Member',
+      `Are you sure you want to remove ${userName} from the group?`,
+      'danger',
+      async () => {
+        try {
+          await removeParticipant(conversation._id, userId);
+          toast.success(`${userName} removed from group successfully.`);
+        } catch (err) {
+          toast.error('Failed to remove member.');
+        }
+      }
+    );
   };
 
   const handlePromoteAdmin = async (userId: string, userName: string) => {
-    if (!confirm(`Do you want to promote ${userName} to admin?`)) return;
-    try {
-      await promoteToAdmin(conversation._id, userId);
-      toast.success(`${userName} is now an admin!`);
-    } catch (err) {
-      toast.error('Failed to promote member.');
-    }
+    triggerConfirm(
+      'Promote to Admin',
+      `Do you want to promote ${userName} to admin?`,
+      'info',
+      async () => {
+        try {
+          await promoteToAdmin(conversation._id, userId);
+          toast.success(`${userName} is now an admin!`);
+        } catch (err) {
+          toast.error('Failed to promote member.');
+        }
+      }
+    );
   };
 
   const handleLeaveGroup = async () => {
-    if (!confirm('Are you sure you want to leave this group?')) return;
-    setIsLeaving(true);
-    try {
-      await removeParticipant(conversation._id, currentUser?._id || '');
-      toast.success('You left the group successfully.');
-      onClose();
-    } catch (err) {
-      toast.error('Failed to leave group.');
-    } finally {
-      setIsLeaving(false);
-    }
+    triggerConfirm(
+      'Leave Group',
+      'Are you sure you want to leave this group?',
+      'danger',
+      async () => {
+        setIsLeaving(true);
+        try {
+          await removeParticipant(conversation._id, currentUser?._id || '');
+          toast.success('You left the group successfully.');
+          onClose();
+        } catch (err) {
+          toast.error('Failed to leave group.');
+        } finally {
+          setIsLeaving(false);
+        }
+      }
+    );
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div className="glass-effect w-full max-w-md rounded-3xl border border-white/10 overflow-hidden shadow-2xl flex flex-col max-h-[85vh] animate-slide-up">
         
         {/* Header */}
@@ -322,5 +371,15 @@ export default function GroupSettingsModal({ isOpen, onClose, conversation }: Gr
 
       </div>
     </div>
+
+      <ConfirmModal
+        isOpen={confirmState.isOpen}
+        onClose={() => setConfirmState((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmState.onConfirm}
+        title={confirmState.title}
+        message={confirmState.message}
+        type={confirmState.type}
+      />
+    </>
   );
 }
